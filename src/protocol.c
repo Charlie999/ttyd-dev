@@ -126,12 +126,16 @@ static char **build_args(struct pss_tty *pss) {
 }
 
 static char **build_env(struct pss_tty *pss) {
-  int i = 0, n = 2;
+  int i = 0, n = 3;
   char **envp = xmalloc(n * sizeof(char *));
 
   // TERM
   envp[i] = xmalloc(36);
   snprintf(envp[i], 36, "TERM=%s", server->terminal_type);
+  i++;
+
+  envp[i] = xmalloc(512);
+  snprintf(envp[i], 512, "AUTHINFO=%s", pss->auth_info);
   i++;
 
   // TTYD_USER
@@ -243,6 +247,8 @@ int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, 
           }
         }
       }
+
+      lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH"));
 
       server->client_count++;
 
