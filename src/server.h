@@ -46,7 +46,7 @@ struct pss_tty {
   char **args;
   int argc;
 
-  char auth_info[512];
+  char auth_info[1024];
 
   struct lws *wsi;
   char *buffer;

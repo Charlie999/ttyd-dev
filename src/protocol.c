@@ -195,7 +195,7 @@ static bool check_auth(struct lws *wsi, struct pss_tty *pss) {
     return n >= 7 && strstr(buf, "Basic ") && !strcmp(buf + 6, server->credential);
   }
 
-  return true;
+  return lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH")) > 0;
 }
 
 int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
@@ -350,7 +350,7 @@ int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, 
             }
           }
           json_object_put(obj);
-          lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH"));
+          
           if (!spawn_process(pss, columns, rows)) return 1;
           break;
         default:
