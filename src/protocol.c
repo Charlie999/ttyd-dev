@@ -184,6 +184,8 @@ static void wsi_output(struct lws *wsi, pty_buf_t *buf) {
   free(message);
 }
 
+static char* xheader = "X-AUTH";
+
 static bool check_auth(struct lws *wsi, struct pss_tty *pss) {
   if (server->auth_header != NULL) {
     return lws_hdr_custom_copy(wsi, pss->user, sizeof(pss->user), server->auth_header, strlen(server->auth_header)) > 0;
@@ -195,7 +197,9 @@ static bool check_auth(struct lws *wsi, struct pss_tty *pss) {
     return n >= 7 && strstr(buf, "Basic ") && !strcmp(buf + 6, server->credential);
   }
 
-  return lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH")) > 0;
+  
+
+  return lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), xheader, strlen(xheader)) > 0;
 }
 
 int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
