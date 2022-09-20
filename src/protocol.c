@@ -248,8 +248,6 @@ int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, 
         }
       }
 
-      lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH"));
-
       server->client_count++;
 
       lws_get_peer_simple(lws_get_network_wsi(wsi), pss->address, sizeof(pss->address));
@@ -352,6 +350,7 @@ int callback_tty(struct lws *wsi, enum lws_callback_reasons reason, void *user, 
             }
           }
           json_object_put(obj);
+          lws_hdr_custom_copy(wsi, pss->auth_info, sizeof(pss->auth_info), "X-AUTH", strlen("X-AUTH"));
           if (!spawn_process(pss, columns, rows)) return 1;
           break;
         default:
